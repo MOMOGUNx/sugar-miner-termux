@@ -65,7 +65,7 @@ Native Linux version — for Ubuntu/Debian desktop or server systems
 
 ```bash
 
-curl -o https://raw.githubusercontent.com/MOMOGUNx/sugar-miner-termux/main/install-termux.sh
+curl -o install-termux.sh https://raw.githubusercontent.com/MOMOGUNx/sugar-miner-termux/main/install-termux.sh
 bash install-termux.sh
 
 ```
@@ -86,7 +86,7 @@ to open the miner menu and configure/start mining.
 ## For Ubuntu/Debian (Native Linux)
 
 ```bash
-curl -o https://raw.githubusercontent.com/MOMOGUNx/sugar-miner-termux/main/install.sh
+curl -o install.sh https://raw.githubusercontent.com/MOMOGUNx/sugar-miner-termux/main/install.sh
 bash install.sh
 ```
 
