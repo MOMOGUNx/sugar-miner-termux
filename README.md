@@ -1,4 +1,4 @@
-Sugarmaker Miner Installer by MOMOGUNx 
+## Sugarmaker Miner Installer by MOMOGUNx 
 
 This repository contains two installation scripts to set up the Sugarmaker cryptocurrency miner with an easy-to-use menu launcher:
 
@@ -10,7 +10,7 @@ Native Linux version — for Ubuntu/Debian desktop or server systems
 
 ---
 
-Features
+## Features
 
 Installs all necessary dependencies
 
@@ -29,7 +29,7 @@ Creates a convenient launcher command sugarmaker for quick start
 
 ---
 
-Scripts Overview
+## Scripts Overview
 
 1. Termux Installer (install-termux.sh)
 
@@ -60,22 +60,13 @@ Adds a global command /usr/local/bin/sugarmaker for system-wide access
 
 ---
 
-Usage
 
-For Termux (Android)
+## For Termux (Android)
 
-1. Open Termux and download the install-termux.sh script.
+```bash
 
-
-2. Make it executable:
-
-chmod +x install-termux.sh
-
-
-3. Run the script:
-
-./install-termux.sh
-
+ufguhi
+```
 
 4. After completion, simply type:
 
