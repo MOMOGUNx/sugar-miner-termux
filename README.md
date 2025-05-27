@@ -12,18 +12,18 @@ Native Linux version — for Ubuntu/Debian desktop or server systems
 
 ## Features
 
-Installs all necessary dependencies
+** Installs all necessary dependencies
 
-Clones and builds Sugarmaker miner from official GitHub
+** Clones and builds Sugarmaker miner from official GitHub
 
-Provides an interactive menu to:
+** Provides an interactive menu to:
 
-Configure wallet address, pool, worker name, threads, and algorithm
+** Configure wallet address, pool, worker name, threads, and algorithm
 
-Start mining directly from the menu
+** Start mining directly from the menu
 
 
-Creates a convenient launcher command sugarmaker for quick start
+** Creates a convenient launcher command sugarmaker for quick start
 
 
 
@@ -33,28 +33,28 @@ Creates a convenient launcher command sugarmaker for quick start
 
 1. Termux Installer (install-termux.sh)
 
-Runs on Android Termux environment
+** Runs on Android Termux environment
 
-Uses proot-distro to install and run Ubuntu inside Termux
+** Uses proot-distro to install and run Ubuntu inside Termux
 
-Installs dependencies and Sugarmaker inside Ubuntu proot
+** Install dependencies and Sugarmaker inside Ubuntu proot
 
-Creates a launcher script inside the Ubuntu environment
+** Creates a launcher script inside the Ubuntu environment
 
-Exposes sugarmaker command in Termux shell to start mining easily
+** Exposes sugarmaker command in Termux shell to start mining easily
 
 
 2. Ubuntu/Debian Native Installer (install-linux.sh)
 
-Runs on Ubuntu or Debian systems directly
+** Runs on Ubuntu or Debian systems directly
 
-Installs dependencies via apt
+** Installs dependencies via apt
 
-Clones and builds Sugarmaker in user home directory
+** Clones and builds Sugarmaker in user home directory
 
-Creates an interactive launcher script in home directory
+** Creates an interactive launcher script in home directory
 
-Adds a global command /usr/local/bin/sugarmaker for system-wide access
+** Adds a global command /usr/local/bin/sugarmaker for system-wide access
 
 
 
@@ -68,7 +68,7 @@ Adds a global command /usr/local/bin/sugarmaker for system-wide access
 ufguhi
 ```
 
-4. After completion, simply type:
+After completion, simply type:
 
 sugarmaker
 
@@ -79,22 +79,14 @@ to open the miner menu and configure/start mining.
 
 ---
 
-For Ubuntu/Debian (Native Linux)
+## For Ubuntu/Debian (Native Linux)
 
-1. Download install-linux.sh to your Linux system.
+```bash
+hdhajaja
 
+```
 
-2. Make it executable:
-
-chmod +x install-linux.sh
-
-
-3. Run the script with sudo or as your user (it will use sudo internally for installs):
-
-./install-linux.sh
-
-
-4. After installation, run:
+After installation, run:
 
 sugarmaker
 
@@ -105,21 +97,21 @@ from any terminal to start the miner menu.
 
 ---
 
-Miner Configuration Menu
+## Miner Configuration Menu
 
-Change Wallet Address
+** Change Wallet Address
 
-Change Mining Pool URL
+** Change Mining Pool URL
 
-Change Worker Name
+** Change Worker Name
 
-Set CPU Thread Count
+** Set CPU Thread Count
 
-Choose Algorithm (default: YespowerSugar)
+** Choose Algorithm (default: YespowerSugar)
 
-Start Mining with current settings
+** Start Mining with current settings
 
-Exit the menu
+** Exit the menu
 
 
 Settings are saved in ~/.sugarmaker_config and loaded automatically.
