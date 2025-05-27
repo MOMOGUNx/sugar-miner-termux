@@ -70,7 +70,9 @@ ufguhi
 
 After completion, simply type:
 
+```bash
 sugarmaker
+```
 
 to open the miner menu and configure/start mining.
 
@@ -83,17 +85,15 @@ to open the miner menu and configure/start mining.
 
 ```bash
 hdhajaja
-
 ```
 
 After installation, run:
 
+```bash
 sugarmaker
+```
 
 from any terminal to start the miner menu.
-
-
-
 
 ---
 
@@ -128,7 +128,6 @@ On Ubuntu/Debian, the miner runs natively and can utilize full CPU power.
 Make sure you have sufficient permissions and CPU cores available for mining.
 
 Always use the latest wallet address and pool info for effective mining.
-
 
 
 ---
