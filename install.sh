@@ -73,8 +73,14 @@ is_mining_active() {
 }
 
 start_mining() {
+    if is_mining_active; then
+        echo -e "${YELLOW}⚠️ Miner is already running with PID $(cat "$PID_FILE"). Stop it first.${NC}"
+        sleep 2
+        return
+    fi
+
     echo -e "${GREEN}Starting mining...${NC}"
-    cd ~/sugarmaker || exit
+    cd "$HOME/sugarmaker" || exit
     ./sugarmaker -a "$ALGO" -o "$POOL" -u "$WALLET" -p "$WORKER" -t "$THREADS" >> "$LOG_FILE" 2>&1 &
     echo $! > "$PID_FILE"
     echo -e "${YELLOW}Miner started with PID $(cat "$PID_FILE")${NC}"
