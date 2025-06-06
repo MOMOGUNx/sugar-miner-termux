@@ -132,6 +132,97 @@ while true; do
     echo -e "${CYAN}==========================================${NC}"
     echo -e "${YELLOW}[1]${NC} Change Wallet Address"
     echo -e "${YELLOW}[2]${NC} Change Mining Pool"
+#!/bin/bash
+
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+CONFIG_FILE="$HOME/.sugarmaker_config"
+LOG_FILE="testlog.log"
+PID_FILE="miner.pid"
+CLEARER_PID_FILE="clearer.pid"
+
+# Default config
+WALLET="sugar1qyqzq90ykjam7u9c0jw0qsjlauc57chhlaqq94w"
+POOL="stratum+tcp://nomp.mofumofu.me:3391"
+WORKER="default"
+THREADS=$(nproc)
+ALGO="YespowerSugar"
+
+# Load config jika ada
+[[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
+
+save_config() {
+    cat > "$CONFIG_FILE" <<EOL
+WALLET="$WALLET"
+POOL="$POOL"
+WORKER="$WORKER"
+THREADS="$THREADS"
+ALGO="$ALGO"
+EOL
+}
+
+is_mining_active() {
+    [[ -f "$PID_FILE" ]] && ps -p "$(cat "$PID_FILE")" > /dev/null 2>&1
+}
+
+stop_mining() {
+    if is_mining_active; then
+        kill "$(cat "$PID_FILE")" 2>/dev/null
+        rm -f "$PID_FILE"
+        echo -e "${RED}🛑 Miner stopped.${NC}"
+    else
+        echo -e "${YELLOW}⚠️ Miner is not running.${NC}"
+    fi
+
+    if [[ -f "$CLEARER_PID_FILE" ]]; then
+        kill "$(cat "$CLEARER_PID_FILE")" 2>/dev/null
+        rm -f "$CLEARER_PID_FILE"
+    fi
+
+    sleep 1
+}
+
+start_mining() {
+    if is_mining_active; then
+        echo -e "${YELLOW}⚠️ Miner is already running with PID $(cat "$PID_FILE"). Stop it first.${NC}"
+        sleep 2
+        return
+    fi
+
+    echo -e "${GREEN}Starting mining...${NC}"
+    cd "$HOME/sugarmaker" || { echo -e "${RED}❌ Directory sugarmaker not found.${NC}"; return; }
+
+    ./sugarmaker -a "$ALGO" -o "$POOL" -u "${WALLET}.${WORKER}" -p x -t "$THREADS" >> "$LOG_FILE" 2>&1 &
+    echo $! > "$PID_FILE"
+    echo -e "${YELLOW}⛏️ Miner started with PID $(cat "$PID_FILE")${NC}"
+
+    # Auto clear log setiap 5 minit
+    (
+        while true; do
+            sleep 300
+            > "$LOG_FILE"
+        done
+    ) &
+    echo $! > "$CLEARER_PID_FILE"
+    sleep 2
+}
+
+# Main menu loop
+while true; do
+    clear
+    echo -e "${CYAN}========== Sugarmaker Miner Menu ==========${NC}"
+    echo -e "${GREEN} [Wallet Address]   :${YELLOW} $WALLET${NC}"
+    echo -e "${GREEN} [Mining Pool]      :${YELLOW} $POOL${NC}"
+    echo -e "${GREEN} [Worker Name]      :${YELLOW} $WORKER${NC}"
+    echo -e "${GREEN} [CPU Threads]      :${YELLOW} $THREADS${NC}"
+    echo -e "${GREEN} [Algorithm]        :${YELLOW} $ALGO${NC}"
+    echo -e "${CYAN}==========================================${NC}"
+    echo -e "${YELLOW}[1]${NC} Change Wallet Address"
+    echo -e "${YELLOW}[2]${NC} Change Mining Pool"
     echo -e "${YELLOW}[3]${NC} Change Worker Name"
     echo -e "${YELLOW}[4]${NC} Change CPU Threads"
     echo -e "${YELLOW}[5]${NC} Change Algorithm"
@@ -167,9 +258,13 @@ while true; do
             read -p "Press ENTER to return to menu..."
             ;;
         8)
-            echo -e "${GREEN}Live miner log (press q to quit)...${NC}"
-            sleep 1
-            less +F "$LOG_FILE"
+            if [[ -f "$LOG_FILE" ]]; then
+                echo -e "${GREEN}Live miner log (press q to quit)...${NC}"
+                sleep 1
+                less +F "$LOG_FILE"
+            else
+                echo -e "${RED}❌ Log file not found.${NC}"
+            fi
             read -p "Press ENTER to return to menu..."
             ;;
         9)
