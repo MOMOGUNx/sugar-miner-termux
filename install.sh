@@ -81,7 +81,7 @@ start_mining() {
 
     echo -e "${GREEN}Starting mining...${NC}"
     cd "$HOME/sugarmaker" || exit
-    ./sugarmaker -a "$ALGO" -o "$POOL" -u "$WALLET" -p "$WORKER" -t "$THREADS" >> "$LOG_FILE" 2>&1 &
+    ./sugarmaker -a "$ALGO" -o "$POOL" -u "${WALLET}.${WORKER}" -p x -t "$THREADS" >> "$LOG_FILE" 2>&1 &
     echo $! > "$PID_FILE"
     echo -e "${YELLOW}Miner started with PID $(cat "$PID_FILE")${NC}"
 
