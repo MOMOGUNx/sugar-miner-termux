@@ -61,9 +61,7 @@ THREADS=$(nproc)
 ALGO="YespowerSugar"
 
 # Load config jika ada
-if [[ -f "$CONFIG_FILE" ]]; then
-    source "$CONFIG_FILE"
-fi
+[[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
 
 save_config() {
     cat > "$CONFIG_FILE" <<EOL
@@ -79,29 +77,21 @@ is_mining_active() {
     [[ -f "$PID_FILE" ]] && ps -p "$(cat "$PID_FILE")" > /dev/null 2>&1
 }
 
-start_mining() {
+stop_mining() {
     if is_mining_active; then
-        echo -e "${YELLOW}⚠️ Miner is already running with PID $(cat "$PID_FILE"). Stop it first.${NC}"
-        sleep 2
-        return
+        kill "$(cat "$PID_FILE")" 2>/dev/null
+        rm -f "$PID_FILE"
+        echo -e "${RED}🛑 Miner stopped.${NC}"
+    else
+        echo -e "${YELLOW}⚠️ Miner is not running.${NC}"
     fi
 
-    echo -e "${GREEN}Starting mining...${NC}"
-    cd "$HOME/sugarmaker" || exit
-    ./sugarmaker -a "$ALGO" -o "$POOL" -u "$WALLET" -p "$WORKER" -t "$THREADS" >> "$LOG_FILE" 2>&1 &
-    echo $! > "$PID_FILE"
-    echo -e "${YELLOW}Miner started with PID $(cat "$PID_FILE")${NC}"
+    if [[ -f "$CLEARER_PID_FILE" ]]; then
+        kill "$(cat "$CLEARER_PID_FILE")" 2>/dev/null
+        rm -f "$CLEARER_PID_FILE"
+    fi
 
-    # Start auto-clear log setiap 5 minit
-    (
-        while true; do
-            sleep 300
-            > "$LOG_FILE"
-        done
-    ) &
-    echo $! > "$CLEARER_PID_FILE"
-
-    sleep 2
+    sleep 1
 }
 
 start_mining() {
@@ -112,12 +102,13 @@ start_mining() {
     fi
 
     echo -e "${GREEN}Starting mining...${NC}"
-    cd "$HOME/sugarmaker" || exit
+    cd "$HOME/sugarmaker" || { echo -e "${RED}❌ Directory sugarmaker not found.${NC}"; return; }
+
     ./sugarmaker -a "$ALGO" -o "$POOL" -u "${WALLET}.${WORKER}" -p x -t "$THREADS" >> "$LOG_FILE" 2>&1 &
     echo $! > "$PID_FILE"
-    echo -e "${YELLOW}Miner started with PID $(cat "$PID_FILE")${NC}"
+    echo -e "${YELLOW}⛏️ Miner started with PID $(cat "$PID_FILE")${NC}"
 
-    # Start auto-clear log setiap 5 minit
+    # Auto clear log setiap 5 minit
     (
         while true; do
             sleep 300
@@ -125,9 +116,76 @@ start_mining() {
         done
     ) &
     echo $! > "$CLEARER_PID_FILE"
-
     sleep 2
 }
+
+# Main menu loop
+while true; do
+    clear
+    echo -e "${CYAN}========== Sugarmaker Miner Menu ==========${NC}"
+    echo -e "${GREEN} [Wallet Address]   :${YELLOW} $WALLET${NC}"
+    echo -e "${GREEN} [Mining Pool]      :${YELLOW} $POOL${NC}"
+    echo -e "${GREEN} [Worker Name]      :${YELLOW} $WORKER${NC}"
+    echo -e "${GREEN} [CPU Threads]      :${YELLOW} $THREADS${NC}"
+    echo -e "${GREEN} [Algorithm]        :${YELLOW} $ALGO${NC}"
+    echo -e "${CYAN}==========================================${NC}"
+    echo -e "${YELLOW}[1]${NC} Change Wallet Address"
+    echo -e "${YELLOW}[2]${NC} Change Mining Pool"
+    echo -e "${YELLOW}[3]${NC} Change Worker Name"
+    echo -e "${YELLOW}[4]${NC} Change CPU Threads"
+    echo -e "${YELLOW}[5]${NC} Change Algorithm"
+    echo -e "${YELLOW}[6]${NC} Start Mining"
+    echo -e "${YELLOW}[7]${NC} Stop Mining"
+    echo -e "${YELLOW}[8]${NC} View Miner Log (live)"
+    echo -e "${YELLOW}[9]${NC} Exit"
+    echo -ne "${CYAN}Select an option [1-9]: ${NC}"
+    read -r opt
+
+    case $opt in
+        1|2|3|4|5)
+            if is_mining_active; then
+                echo -e "${RED}❌ Stop the miner first before changing this setting.${NC}"
+                sleep 2
+            else
+                case $opt in
+                    1) echo -ne "${GREEN}Enter new wallet address: ${NC}"; read -r WALLET ;;
+                    2) echo -ne "${GREEN}Enter new mining pool URL: ${NC}"; read -r POOL ;;
+                    3) echo -ne "${GREEN}Enter new worker name: ${NC}"; read -r WORKER ;;
+                    4) echo -ne "${GREEN}Enter number of CPU threads: ${NC}"; read -r THREADS ;;
+                    5) echo -ne "${GREEN}Enter algorithm name (e.g., YespowerSugar): ${NC}"; read -r ALGO ;;
+                esac
+                save_config
+            fi
+            ;;
+        6)
+            start_mining
+            read -p "Press ENTER to return to menu..."
+            ;;
+        7)
+            stop_mining
+            read -p "Press ENTER to return to menu..."
+            ;;
+        8)
+            if [[ -f "$LOG_FILE" ]]; then
+                echo -e "${GREEN}Live miner log (press q to quit)...${NC}"
+                sleep 1
+                less +F "$LOG_FILE"
+            else
+                echo -e "${RED}❌ Log file not found.${NC}"
+            fi
+            read -p "Press ENTER to return to menu..."
+            ;;
+        9)
+            stop_mining
+            echo -e "${RED}Exiting Sugarmaker Launcher.${NC}"
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Invalid option. Please choose between 1 and 9.${NC}"
+            sleep 1
+            ;;
+    esac
+done
 
 while true; do
     clear
