@@ -104,26 +104,27 @@ start_mining() {
     sleep 2
 }
 
-stop_mining() {
-    if [[ -f "$PID_FILE" ]]; then
-        PID=$(cat "$PID_FILE")
-        if ps -p "$PID" > /dev/null 2>&1; then
-            kill "$PID"
-            echo -e "${RED}Stopped miner with PID $PID${NC}"
-        else
-            echo -e "${YELLOW}No running miner found.${NC}"
-        fi
-        rm -f "$PID_FILE"
+start_mining() {
+    if is_mining_active; then
+        echo -e "${YELLOW}⚠️ Miner is already running with PID $(cat "$PID_FILE"). Stop it first.${NC}"
+        sleep 2
+        return
     fi
 
-    if [[ -f "$CLEARER_PID_FILE" ]]; then
-        CLEAR_PID=$(cat "$CLEARER_PID_FILE")
-        if ps -p "$CLEAR_PID" > /dev/null 2>&1; then
-            kill "$CLEAR_PID"
-            echo -e "${RED}Stopped auto log clearer.${NC}"
-        fi
-        rm -f "$CLEARER_PID_FILE"
-    fi
+    echo -e "${GREEN}Starting mining...${NC}"
+    cd "$HOME/sugarmaker" || exit
+    ./sugarmaker -a "$ALGO" -o "$POOL" -u "${WALLET}.${WORKER}" -p x -t "$THREADS" >> "$LOG_FILE" 2>&1 &
+    echo $! > "$PID_FILE"
+    echo -e "${YELLOW}Miner started with PID $(cat "$PID_FILE")${NC}"
+
+    # Start auto-clear log setiap 5 minit
+    (
+        while true; do
+            sleep 300
+            > "$LOG_FILE"
+        done
+    ) &
+    echo $! > "$CLEARER_PID_FILE"
 
     sleep 2
 }
