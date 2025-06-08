@@ -258,7 +258,7 @@ proot-distro login ubuntu -- bash -c "chmod +x /root/sugarmaker-launcher.sh"
 proot-distro login ubuntu -- bash -c "echo 'alias sugarmaker=\"bash /root/sugarmaker-launcher.sh\"' >> /root/.bashrc"
 
 # 7. CREATE GLOBAL SHORTCUT FROM TERMUX
-echo 'proot-distro login ubuntu -- bash /root/sugarmaker-launcher.sh' > ~/sugarmaker
+echo 'proot-distro login ubuntu -- bash /HOME/sugarmaker-launcher.sh' > ~/sugarmaker
 chmod +x ~/sugarmaker
 mv ~/sugarmaker /data/data/com.termux/files/usr/bin/sugarmaker
 
@@ -270,4 +270,4 @@ echo -e "Auto-starting Sugarmaker launcher..."
 echo -e "Next time, just type: ${YELLOW}sugarmaker${NC}"
 echo -e "${CYAN}============================================${NC}"
 sleep 2
-proot-distro login ubuntu -- bash /root/sugarmaker-launcher.sh
+proot-distro login ubuntu -- bash /HOME/sugarmaker-launcher.sh
