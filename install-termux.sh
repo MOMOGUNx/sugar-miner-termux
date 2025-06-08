@@ -39,7 +39,7 @@ proot-distro login ubuntu -- bash -c "
 "
 
 # 4. CREATE LAUNCHER SCRIPT IN UBUNTU
-proot-distro login ubuntu -- bash -c "cat > /root/sugarmaker-launcher.sh" <<'EOF'
+proot-distro login ubuntu -- bash -c "cat > /HOME/sugarmaker-launcher.sh" <<'EOF'
 #!/bin/bash
 
 CYAN='\033[0;36m'
